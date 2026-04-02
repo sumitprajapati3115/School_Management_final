@@ -1,0 +1,337 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin WebContent</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+     
+    <style>
+        body{
+            margin:0;
+            background: linear-gradient(120deg,#eef2f7,#dbe9ff);
+            font-family: Arial;
+        }
+
+        /* HEADER */
+        .header{
+            position: fixed;
+            top:0;
+            width:100%;
+            height:80px;
+            background: linear-gradient(90deg,#0a1f44,#1e5eff,#00aaff);
+            color:white;
+            display:flex;
+            align-items:center;
+            padding:0 20px;
+            z-index:1000;
+            box-shadow:0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        .header img{height:60px;border-radius:10px;}
+
+        .time-box{
+            margin-left:auto;
+            text-align:right;
+            font-size:13px;
+        }
+
+        /* SIDEBAR */
+        .sidebar{
+            position: fixed;
+            top:75px;
+            left:0;
+            width:240px;
+            height:100%;
+            background: linear-gradient(180deg,#0b2a55,#003366);
+            padding-top:10px;
+        }
+
+        .sidebar a{
+            display:block;
+            color:white;
+            padding:12px 18px;
+            text-decoration:none;
+            border-left:4px solid transparent;
+            transition:0.3s;
+        }
+
+        .sidebar a:hover{
+            background:#1e5eff;
+            border-left:4px solid #00d4ff;
+        }
+
+        /* MAIN */
+        .main{
+            margin-left:250px;
+            margin-top:90px;
+            padding:20px;
+        }
+
+        .card-box{
+            background:white;
+            padding:20px;
+            border-radius:15px;
+            margin-bottom:25px;
+            box-shadow:0 5px 15px rgba(0,0,0,0.08);
+        }
+
+        .section-title{
+            font-weight:bold;
+            margin-bottom:15px;
+            color:#0a1f44;
+        }
+
+        .preview{
+            width:100px;
+            border-radius:10px;
+            margin-top:10px;
+            border:2px solid #ddd;
+        }
+
+        .btn-main{
+            background: linear-gradient(90deg,#0a1f44,#1e5eff);
+            color:white;
+            border:none;
+        }
+
+        .btn-main:hover{
+            background:#00aaff;
+            color:white;
+        }
+
+        table img{
+            border-radius:8px;
+        }
+.logo-area img{
+width:100%;
+height:115px;
+padding-top: 8px;
+padding-bottom: 2px;
+}
+    </style>
+</head>
+
+<body>
+{% if messages %}
+<div class="position-fixed top-0 end-0 p-3" style="z-index: 9999;">
+    {% for message in messages %}
+        <div class="alert alert-success">
+            {{ message }}
+        </div>
+    {% endfor %}
+</div>
+{% endif %}
+<!-- HEADER -->
+<div class="header">
+    <div class="logo-area">
+        <img src="{% static 'images/school_logo.png' %}" class="school_logo">
+    </div>
+    <h5 class="ms-3">Admin WebContent</h5>
+
+    <div class="time-box">
+        <div id="date"></div>
+        <div id="time"></div>
+    </div>
+</div>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+     <a href="{% url 'admin_dashboard' %}"><i class="fa fa-tachometer-alt"></i> Dashboard</a>
+    <a href="#hero"><i class="fa fa-home"></i> Hero</a>
+    <a href="#about"><i class="fa fa-info"></i> About</a>
+    <a href="#principal"><i class="fa fa-user-tie"></i> Principal</a>
+    <a href="#student"><i class="fa fa-school"></i> Student Life</a>
+    <a href="#event"><i class="fa fa-calendar"></i> Events</a>
+    <a href="#gallery"><i class="fa fa-image"></i> Gallery</a>
+    <a href="#contact"><i class="fa fa-phone"></i> Contact</a>
+</div>
+
+<div class="main">
+
+<!-- HERO -->
+<div id="hero" class="card-box">
+<h4 class="section-title">Hero Section</h4>
+
+<form method="POST" enctype="multipart/form-data" action="{% url 'update_hero' %}">
+{% csrf_token %}
+
+<input type="text" name="title" class="form-control" value="{{ hero.title }}" placeholder="Enter Title">
+<input type="text" name="subtitle" class="form-control mt-2" value="{{ hero.subtitle }}" placeholder="Enter Subtitle">
+
+<input type="file" name="slide1" class="form-control mt-2">
+{% if hero.slide1 %}<img src="{{ hero.slide1.url }}" class="preview">{% endif %}
+
+<input type="file" name="slide2" class="form-control mt-2">
+{% if hero.slide2 %}<img src="{{ hero.slide2.url }}" class="preview">{% endif %}
+
+<input type="file" name="slide3" class="form-control mt-2">
+{% if hero.slide3 %}<img src="{{ hero.slide3.url }}" class="preview">{% endif %}
+
+<button class="btn btn-main mt-3">Update Hero</button>
+</form>
+</div>
+
+<!-- ABOUT -->
+<div id="about" class="card-box">
+<h4 class="section-title">About Section</h4>
+
+<form method="POST" enctype="multipart/form-data" action="{% url 'update_about' %}">
+{% csrf_token %}
+
+<input type="file" name="image" class="form-control">
+{% if about.image %}<img src="{{ about.image.url }}" class="preview">{% endif %}
+
+<textarea name="description" class="form-control mt-2" placeholder="Enter About Description">{{ about.description }}</textarea>
+
+<button class="btn btn-main mt-3">Update About</button>
+</form>
+</div>
+
+<!-- PRINCIPAL & MANAGER -->
+<div id="principal" class="card-box">
+<h4 class="section-title">Principal</h4>
+
+<form method="POST" enctype="multipart/form-data" action="{% url 'update_principal' %}">
+{% csrf_token %}
+
+<input type="file" name="principal_image" class="form-control">
+{% if pm.principal_image %}<img src="{{ pm.principal_image.url }}" class="preview">{% endif %}
+
+<textarea name="principal_p1" class="form-control mt-2" placeholder="Paragraph 1">{{ pm.principal_p1 }}</textarea>
+<textarea name="principal_p2" class="form-control mt-2" placeholder="Paragraph 2">{{ pm.principal_p2 }}</textarea>
+<textarea name="principal_p3" class="form-control mt-2" placeholder="Paragraph 3">{{ pm.principal_p3 }}</textarea>
+<input type="text" name="principal_name" class="form-control mt-2" value="{{ pm.principal_name }}" placeholder="Principal Name">
+
+<button class="btn btn-success mt-3">Update Principal</button>
+</form>
+
+<hr>
+
+<h4 class="section-title">Manager</h4>
+
+<form method="POST" enctype="multipart/form-data" action="{% url 'update_manager' %}">
+{% csrf_token %}
+
+<input type="file" name="manager_image" class="form-control">
+{% if pm.manager_image %}<img src="{{ pm.manager_image.url }}" class="preview">{% endif %}
+
+<textarea name="manager_p1" class="form-control mt-2" placeholder="Paragraph 1">{{ pm.manager_p1 }}</textarea>
+<textarea name="manager_p2" class="form-control mt-2" placeholder="Paragraph 2">{{ pm.manager_p2 }}</textarea>
+<textarea name="manager_p3" class="form-control mt-2" placeholder="Paragraph 3">{{ pm.manager_p3 }}</textarea>
+<input type="text" name="manager_name" class="form-control mt-2" value="{{ pm.manager_name }}" placeholder="Manager Name">
+
+<button class="btn btn-warning mt-3">Update Manager</button>
+</form>
+</div>
+
+<!-- STUDENT LIFE -->
+<div id="student" class="card-box">
+<h4 class="section-title">Student Life</h4>
+
+<form method="POST" enctype="multipart/form-data" action="{% url 'add_student_life' %}">
+{% csrf_token %}
+<input type="file" name="image" class="form-control">
+<input type="text" name="title" class="form-control mt-2" placeholder="Enter Title">
+<button class="btn btn-main mt-2">Add</button>
+</form>
+
+<table class="table table-striped mt-3">
+<tr><th>Image</th><th>Title</th><th>Action</th></tr>
+{% for s in student_life %}
+<tr>
+<td><img src="{{ s.image.url }}" width="70"></td>
+<td>{{ s.title }}</td>
+<td>
+<a href="{% url 'delete_student_life' s.id %}" class="btn btn-danger btn-sm">Delete</a>
+<a href="#" class="btn btn-primary btn-sm">Update</a>
+</td>
+</tr>
+{% endfor %}
+</table>
+</div>
+
+<!-- EVENTS -->
+<div id="event" class="card-box">
+<h4 class="section-title">Campus Events</h4>
+
+<form method="POST" enctype="multipart/form-data" action="{% url 'add_campus_event' %}">
+{% csrf_token %}
+<input type="file" name="image" class="form-control">
+<input type="text" name="date" class="form-control mt-2" placeholder="Event Date">
+<textarea name="description" class="form-control mt-2" placeholder="Description"></textarea>
+<button class="btn btn-main mt-2">Add</button>
+</form>
+
+<table class="table table-striped mt-3">
+<tr><th>Image</th><th>Date</th><th>Description</th><th>Action</th></tr>
+{% for e in events %}
+<tr>
+<td><img src="{{ e.image.url }}" width="70"></td>
+<td>{{ e.date }}</td>
+<td>{{ e.description }}</td>
+<td>
+<a href="{% url 'delete_campus_event' e.id %}" class="btn btn-danger btn-sm">Delete</a>
+<a href="#" class="btn btn-primary btn-sm">Update</a>
+</td>
+</tr>
+{% endfor %}
+</table>
+</div>
+
+<!-- GALLERY -->
+<div id="gallery" class="card-box">
+<h4 class="section-title">Gallery</h4>
+
+<form method="POST" enctype="multipart/form-data" action="{% url 'add_gallery_image' %}">
+{% csrf_token %}
+<input type="file" name="image" class="form-control">
+<button class="btn btn-main mt-2">Add</button>
+</form>
+
+<table class="table table-striped mt-3">
+<tr><th>Image</th><th>Action</th></tr>
+{% for g in gallery %}
+<tr>
+<td><img src="{{ g.image.url }}" width="70"></td>
+<td>
+<a href="{% url 'delete_gallery' g.id %}" class="btn btn-danger btn-sm">Delete</a>
+<a href="#" class="btn btn-primary btn-sm">Update</a>
+</td>
+</tr>
+{% endfor %}
+</table>
+</div>
+
+<!-- CONTACT -->
+<div id="contact" class="card-box">
+<h4 class="section-title">Contact</h4>
+
+<form method="POST" action="{% url 'update_contact' %}">
+{% csrf_token %}
+<input type="text" name="map_link" class="form-control" value="{{ contact.map_link }}" placeholder="Map Link">
+<input type="email" name="email" class="form-control mt-2" value="{{ contact.email }}" placeholder="Email">
+<input type="text" name="phone" class="form-control mt-2" value="{{ contact.phone }}" placeholder="Phone">
+<textarea name="address" class="form-control mt-2" placeholder="Address">{{ contact.address }}</textarea>
+<button class="btn btn-main mt-2">Update Contact</button>
+</form>
+</div>
+
+</div>
+
+<script>
+function updateTime(){
+    let now = new Date();
+    document.getElementById("date").innerHTML = now.toDateString();
+    document.getElementById("time").innerHTML = now.toLocaleTimeString();
+}
+setInterval(updateTime,1000);
+updateTime();
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

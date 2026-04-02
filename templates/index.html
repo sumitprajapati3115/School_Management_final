@@ -1,0 +1,870 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>M.P. CONVENT SCHOOL</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+<style> 
+    /* UNIVERSAL IMAGE BOX SYSTEM */
+.img-box {
+  width: 100%;
+  height: 300px; /* default height */
+  overflow: hidden;
+  border-radius: 12px;
+  background: #f5f5f5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* IMAGE FIT */
+.img-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+
+.img-box.medium {
+  height: 300px;
+}
+
+.img-box.large {
+  height: 400px;
+}
+
+/* Layout responsive only */
+.news-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+/* Desktop (default) */
+.news-card {
+    width: 33.33%;
+}
+
+/* Tablet */
+@media (max-width: 992px) {
+    .news-card {
+        width: 50%;
+    }
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+    .news-card {
+        width: 100%;
+    }
+}
+/* Show on click (focus) */
+.dropdown:focus-within .dropdown-menu {
+    display: block;
+}
+/* Hide dropdown by default */
+.dropdown-menu {
+    display: none;
+}
+
+/* Show on hover */
+.dropdown:hover .dropdown-menu {
+    display: block;
+}
+
+</style>
+</head>
+
+<body>
+<!-- PAGE LOADER -->
+<div id="loader">
+<div class="spinner"></div>
+</div>
+<header>
+    <div class="menu-toggle">
+<i class="fa-solid fa-bars"></i>
+</div>
+
+<a href="#home" class="logo-area">
+
+<img src="{% static 'images/School_logo.png' %}" class="school_logo" alt="School Logo">
+
+
+
+</a>
+
+<nav>
+<ul>
+<li><a href="#home">Home</a></li>
+<li><a href="#about">About</a></li>
+<li><a href="#academics">Academics</a></li>
+<li><a href="#student">Student Life</a></li>
+<li><a href="#facilities">Facilities</a></li>
+<li><a href="#gallery">Gallery</a></li>
+<li><a href="#campus-events">Campus Events</a></li>
+<li><a href="#" id="admissionBtn">Admission</a></li>
+<li class="dropdown">
+
+<a href="#" id="loginBtn">
+Login <i class="fa-solid fa-caret-down"></i>
+</a>
+
+<ul class="dropdown-menu" id="loginMenu">
+<li><a href="#" id="adminLogin">Admin Login</a></li>
+<li><a href="#" id="teacherLogin">Teacher Login</a></li>
+
+</ul>
+
+</li>
+<li><a href="#contact">Contact</a></li>
+</ul>
+</nav>
+
+</header>
+
+<!-- LIVE NEWS BAR -->
+
+<div class="news-bar">
+<div class="news-text">
+
+{% for n in live_news %}
+📢 {{ n.text }} | 
+{% endfor %}
+
+</div>
+</div>
+
+<section class="hero" id="home">
+
+<div class="slider">
+
+    {% if hero and hero.slide1 %}
+    <div class="slide" style="background-image: url('{{ hero.slide1.url }}')"></div>
+    {% endif %}
+
+    {% if hero and hero.slide2 %}
+    <div class="slide" style="background-image: url('{{ hero.slide2.url }}')"></div>
+    {% endif %}
+
+    {% if hero and hero.slide3 %}
+    <div class="slide" style="background-image: url('{{ hero.slide3.url }}')"></div>
+    {% endif %}
+
+    <div class="overlay"></div>
+
+    <div class="hero-text">
+        <h1>{{ hero.title }}</h1>
+        <p>{{ hero.subtitle }}</p>
+        <a href="#" class="btn" onclick="openAdmission(); return false;">Apply Now</a>
+    </div>
+
+</div>
+
+</section>
+
+<section id="news" class="fade">
+<h2>Latest News & Events</h2>
+<div class="news-wrapper">
+
+    <!-- LEFT -->
+    <div class="news-card">
+        <h3>Latest News</h3>
+
+        <div class="news-ticker">
+            <div class="news-track">
+                {% for n in news %}
+                    <span>
+                        📢 {{ n.title }}
+                        {% if n.is_new %}
+                            <span class="new-badge">NEW</span>
+                        {% endif %}
+                    </span>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- MIDDLE -->
+    <div class="news-card">
+        <h3>Upcoming Events</h3>
+
+        <div class="scroll-box">
+            {% for e in events %}
+            <div class="event">
+                <div class="date">{{ e.date|date:"d M" }}</div>
+                <div>
+                    <p>{{ e.title }}</p>
+                    {% if e.description %}
+                    <small>{{ e.description }}</small>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- RIGHT -->
+    <div class="news-card">
+        <h3>Notice Board</h3>
+
+        <div class="scroll-box">
+            <ul>
+                {% for no in notices %}
+                <li>📄 {{ no.title }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+</div>
+
+</section>
+<!-- ABOUT SECTION -->
+
+<section id="about" class="fade">
+
+<h2 class="about-title">About Our School</h2>
+
+<!-- SCHOOL INTRO -->
+
+<div class="about-container">
+
+<div class="about-image">
+<div class="img-box large">
+
+    {% if about and about.image %}
+        <img src="{{ about.image.url }}">
+    {% else %}
+        <img src="{% static 'images/about.PNG' %}">
+    {% endif %}
+
+</div>
+</div>
+
+<div class="about-text">
+
+<h3>Welcome to Our School</h3>
+
+<p>
+    {{ about.description }}
+</p>
+
+<div class="about-features">
+
+<div class="feature">
+<i class="fa-solid fa-graduation-cap"></i>
+<span>Quality Education</span>
+</div>
+
+<div class="feature">
+<i class="fa-solid fa-computer"></i>
+<span>Smart Classes</span>
+</div>
+
+<div class="feature">
+<i class="fa-solid fa-book"></i>
+<span>Modern Library</span>
+</div>
+
+<div class="feature">
+<i class="fa-solid fa-futbol"></i>
+<span>Sports Activities</span>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- PRINCIPAL SECTION -->
+<div class="principal-modern">
+
+    <div class="principal-img-box">
+        <div class="img-box large">
+
+            {% if pm and pm.principal_image %}
+                <img src="{{ pm.principal_image.url }}">
+            {% else %}
+                <img src="{% static 'images/Principal.jpg' %}">
+            {% endif %}
+
+        </div>
+    </div>
+
+    <div class="principal-content">
+
+        <h2>About Our Principal</h2>
+
+        <p>{{ pm.principal_p1 }}</p>
+        <p>{{ pm.principal_p2 }}</p>
+        <p>{{ pm.principal_p3 }}</p>
+
+        <h4>{{ pm.principal_name }}</h4>
+        <span class="principal-role">Principal</span>
+
+    </div>
+
+</div>
+
+
+<!-- MANAGER SECTION (ALAG BOX) -->
+<div class="principal-modern reverse">
+
+    <div class="principal-img-box">
+        <div class="img-box large">
+
+            {% if pm and pm.manager_image %}
+                <img src="{{ pm.manager_image.url }}">
+            {% else %}
+                <img src="{% static 'images/manager.jpg' %}">
+            {% endif %}
+
+        </div>
+    </div>
+
+    <div class="principal-content">
+
+        <h2>About Our Manager</h2>
+
+        <p>{{ pm.manager_p1 }}</p>
+        <p>{{ pm.manager_p2 }}</p>
+        <p>{{ pm.manager_p3 }}</p>
+
+        <h4>{{ pm.manager_name }}</h4>
+        <span class="principal-role">Manager</span>
+
+    </div>
+
+</div>
+<!-- VISION MISSION -->
+
+<div class="vision-mission">
+
+<div class="vm-card">
+<i class="fa-solid fa-eye"></i>
+<h3>Our Vision</h3>
+<p>
+To inspire students to become lifelong learners, responsible citizens 
+and future leaders of society.
+</p>
+</div>
+
+<div class="vm-card">
+<i class="fa-solid fa-bullseye"></i>
+<h3>Our Mission</h3>
+<p>
+To provide quality education using modern teaching methods, technology 
+and a positive learning environment.
+</p>
+</div>
+
+<div class="vm-card">
+<i class="fa-solid fa-handshake"></i>
+<h3>Core Values</h3>
+<p>
+We believe in honesty, discipline, respect, teamwork and commitment 
+towards excellence in education.
+</p>
+</div>
+
+<div class="vm-card">
+<i class="fa-solid fa-trophy"></i>
+<h3>Our Goals</h3>
+<p>
+To achieve academic excellence and prepare students for competitive 
+world with confidence and skills.
+</p>
+</div>
+
+</div>
+
+
+<!-- COUNTERS -->
+
+<div class="counters">
+
+<div class="counter-box">
+<h3>5000+</h3>
+<p>Students</p>
+</div>
+
+<div class="counter-box">
+<h3>120+</h3>
+<p>Teachers</p>
+</div>
+
+<div class="counter-box">
+<h3>50+</h3>
+<p>Awards</p>
+</div>
+
+<div class="counter-box">
+<h3>25+</h3>
+<p>Years Experience</p>
+</div>
+
+</div>
+
+</section>
+
+<section id="academics" class="fade">
+
+<h2>Our Academics</h2>
+
+<div class="academics-container">
+
+<div class="academic-card">
+<i class="fa-solid fa-child"></i>
+<h3>Primary Education</h3>
+<p>Building a strong foundation with interactive and creative learning.</p>
+</div>
+
+<div class="academic-card">
+<i class="fa-solid fa-user-graduate"></i>
+<h3>Secondary Education</h3>
+<p>Advanced subjects with practical knowledge and skill development.</p>
+</div>
+
+<div class="academic-card">
+<i class="fa-solid fa-computer"></i>
+<h3>Computer Lab</h3>
+<p>Modern computer labs with latest technology and digital learning.</p>
+</div>
+
+<div class="academic-card">
+<i class="fa-solid fa-flask"></i>
+<h3>Science Lab</h3>
+<p>Hands-on experiments and scientific research activities.</p>
+</div>
+
+<div class="academic-card">
+<i class="fa-solid fa-book"></i>
+<h3>Library</h3>
+<p>Large collection of books for knowledge and research.</p>
+</div>
+
+<div class="academic-card">
+<i class="fa-solid fa-language"></i>
+<h3>Language Learning</h3>
+<p>English and other languages to improve communication skills.</p>
+</div>
+
+</div>
+
+</section>
+
+<section id="student" class="fade">
+
+<h2>Student Life</h2>
+
+<div class="student-container">
+
+{% for s in students_life %}
+
+<div class="student-card">
+    <div class="img-box medium">
+        <img src="{{ s.image.url }}">
+    </div>
+    <h3 style="color:orange; text-align:center; font-weight: bold;">{{ s.title }}</h3>
+</div>
+
+{% endfor %}
+
+</div>
+
+</section>
+
+<section id="facilities" class="fade" >
+
+<h2>Our Facilities</h2>
+
+<div class="facility-container">
+
+<div class="facility-card">
+<i class="fa-solid fa-book"></i>
+<h3>Library</h3>
+<p>Large collection of books and study materials.</p>
+</div>
+
+<div class="facility-card">
+<i class="fa-solid fa-computer"></i>
+<h3>Computer Lab</h3>
+<p>Modern computers for digital learning.</p>
+</div>
+
+<div class="facility-card">
+<i class="fa-solid fa-flask"></i>
+<h3>Science Lab</h3>
+<p>Advanced equipment for experiments.</p>
+</div>
+
+<div class="facility-card">
+<i class="fa-solid fa-futbol"></i>
+<h3>Playground</h3>
+<p>Sports and physical activities area.</p>
+</div>
+
+</div>
+
+</section>
+
+<section id="gallery" class="fade">
+
+<h2>School Gallery</h2>
+
+<div class="gallery-container">
+
+{% for g in gallery_images %}
+
+<div class="img-box medium">
+    <img src="{{ g.image.url }}">
+</div>
+
+{% endfor %}
+
+</div>
+
+</section>
+
+<!-- LIGHTBOX -->
+
+<div id="lightbox" onclick="closeImg()">
+<img id="lightbox-img">
+</div>
+
+<section id="campus-events">
+
+<h2>Campus Events & Activities</h2>
+
+<div class="news-container">
+
+{% for e in campus_events %}
+
+<div class="news-card">
+    <div class="img-box medium">
+        <img src="{{ e.image.url }}">
+    </div>
+    <span class="news-date">{{ e.date }}</span>
+    <p>{{ e.description }}</p>
+</div>
+
+{% endfor %}
+
+</div>
+
+</section>
+<section id="contact"class="fade">
+
+<h2 class="contact-title">Contact Us</h2>
+
+<div class="contact-container">
+
+<!-- LEFT SIDE -->
+
+<div class="contact-left">
+
+<form class="contact-form">
+
+<input type="text" placeholder="Your Name" required>
+<input type="email" placeholder="Your Email" required>
+<input type="text" placeholder="Subject">
+
+<textarea placeholder="Your Message" rows="4"></textarea>
+
+<button type="submit">Send Message</button>
+
+</form>
+
+</div>
+
+
+<!-- RIGHT SIDE MAP -->
+
+<div class="contact-map">
+
+<iframe 
+src="{{ contact.map_link }}"
+allowfullscreen 
+loading="lazy">
+</iframe>
+
+<h3 style="padding: 10px; color: #003366;">Get in Touch</h3>
+
+<p><i class="fa-solid fa-envelope"></i> {{ contact.email }}</p>
+<p><i class="fa-solid fa-phone"></i> {{ contact.phone }}</p>
+<p><i class="fa-solid fa-location-dot"></i> {{ contact.address }}</p>
+
+</div>
+
+</div>
+
+</section>
+
+<footer class="footer">
+
+<div class="footer-container">
+
+<div class="footer-box">
+<h3>My School</h3>
+<p>Providing quality education and building bright futures.</p>
+</div>
+
+<div class="footer-box">
+<h3>Quick Links</h3>
+<ul>
+<li><a href="#home">Home</a></li>
+<li><a href="#about">About</a></li>
+<li><a href="#academics">Academics</a></li>
+<li><a href="#gallery">Gallery</a></li>
+<li><a href="#contact">Contact</a></li>
+</ul>
+</div>
+
+<div class="footer-box">
+<h3>Contact</h3>
+<p>Email: school@email.com</p>
+<p>Phone: +91 9876543210</p>
+<p>Location: India</p>
+</div>
+
+<div class="footer-box">
+<h3>Follow Us</h3>
+<div class="social-icons">
+<a href="#"><i class="fab fa-facebook"></i></a>
+<a href="#"><i class="fab fa-instagram"></i></a>
+<a href="#"><i class="fab fa-twitter"></i></a>
+<a href="#"><i class="fab fa-linkedin"></i></a>
+</div>
+</div>
+
+</div>
+
+<div class="footer-bottom">
+<p>© 2026 My School | All Rights Reserved</p>
+</div> 
+
+
+</footer>
+<!-- ADMIN LOGIN POPUP -->
+
+<div id="adminPopup" class="popup">
+
+<div class="popup-box">
+
+<span class="close-btn" onclick="closeAdmin()">&times;</span>
+
+<h2>Admin Login</h2>
+
+<form method="POST" action="/admin-login/">
+    {% csrf_token %}
+
+<div class="input-group">
+<i class="fa fa-user"></i>
+<input type="text" name="admin_username" placeholder="Admin Username" required>
+
+</div>
+
+<div class="input-group">
+<i class="fa fa-lock"></i>
+<input type="password" name="password" placeholder="Password" required>
+
+</div>
+
+<button type="submit" class="login-btn">Login</button>
+
+</form>
+
+</div>
+
+</div>
+
+<!-- ADMISSION POPUP -->
+<div id="admissionPopup" class="popup">
+<div class="popup-box admission-form">
+
+<span class="close-btn" onclick="closeAdmission()">&times;</span>
+
+<div class="form-header">
+
+<img src="{% static "images/school_logo.png" %}" class="school-logo">
+
+<div>
+<h1 class="school-title">M.P. CONVENT SCHOOL </h1>
+<p class="school-subtitle">School Admission Form 2026-27</p>
+</div>
+
+</div>
+
+<form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+
+<h2>Student Information</h2>
+<div class="form-row">
+<label>Student Full Name</label>
+<input type="text"name="name" placeholder="Enter Student Full Name" required>
+</div>
+
+<div class="form-row">
+<label>Date of Birth</label>
+<input type="date" name="date_of_birth" required>
+</div>
+
+<div class="form-row">
+<label>Gender</label>
+<select name="gender" required>
+<option value="">Select Gender</option>
+<option>Male</option>
+<option>Female</option>
+<option>Other</option>
+</select>
+</div>
+
+<div class="form-row">
+<label>Nationality</label>
+<input type="text" name="nationality" placeholder="Enter Nationality">
+</div>
+
+<div class="form-row">
+<label>Religion</label>
+<input type="text" name="religion" placeholder="Enter Religion">
+</div>
+
+<div class="form-row">
+<label>Category</label>
+<input type="text" name="category" placeholder="General / OBC / SC / ST">
+</div>
+
+<div class="form-row">
+<label>Aadhar Number</label>
+<input type="text" name="aadhar_number" placeholder="Enter 12 Digit Aadhar Number">
+</div>
+
+<div class="form-row">
+<label>Blood Group</label>
+<input type="text" name="blood_group" placeholder="Ex: O+, B+, AB+">
+</div>
+
+
+<h2>Contact Details</h2>
+
+<div class="form-row">
+<label>Mobile Number</label>
+<input type="text" name="mobile" id="mobile" placeholder="Enter 10 Digit Mobile Number" required>
+</div>
+
+<div class="form-row">
+<label>Email Address</label>
+<input type="email" name="email" id="email" placeholder="Enter Email Address">
+</div>
+
+<div class="form-row">
+<label>Full Address</label>
+<textarea name="full_address" placeholder="Enter Full Residential Address"></textarea>
+</div>
+
+
+<h2>Parent Details</h2>
+
+<div class="form-row">
+<label>Father Name</label>
+<input type="text" name="father_name" placeholder="Enter Father's Name">
+</div>
+
+<div class="form-row">
+<label>Father Occupation</label>
+<input type="text" name="father_occupation" placeholder="Enter Father's Occupation">
+</div>
+
+<div class="form-row">
+<label>Father Mobile</label>
+<input type="text" name="father_mobile" id="fatherMobile" placeholder="Enter Father's Mobile Number">
+</div>
+
+<div class="form-row">
+<label>Mother Name</label>
+<input type="text" name="mother_name" id="motherName" placeholder="Enter Mother's Name">
+</div>
+
+<div class="form-row">
+<label>Mother Occupation</label>
+<input type="text" name="mother_occupation" placeholder="Enter Mother's Occupation">
+</div>
+
+<div class="form-row">
+<label>Mother Mobile</label>
+<input type="text" name="mother_mobile" id="motherMobile" placeholder="Enter Mother's Mobile Number">
+</div>
+
+
+<h2>Academic Details</h2>
+
+<div class="form-row">
+<label>Previous School</label>
+<input type="text" name="previous_school" placeholder="Enter Previous School Name">
+</div>
+
+<div class="form-row">
+<label>Previous Class</label>
+<input type="text" name="previous_class" placeholder="Enter Previous Class">
+</div>
+
+<div class="form-row">
+<label>Marks Percentage</label>
+<input type="text" name="marks_percentage" placeholder="Enter Marks Percentage">
+</div>
+
+<div class="form-row">
+<label>Class Applying For</label>
+<input type="text" name="course" placeholder="Enter Class Applying For">
+</div>
+
+
+<h2>Documents</h2>
+
+<div class="form-row">
+<label>Student Photo</label>
+<input type="file" name="photo" id="photo" accept="image/*">
+<img id="photoPreview" style="width:120px;display:none;margin-top:8px;border-radius:6px;">
+</div>
+
+<div class="form-row">
+<label>Birth Certificate</label>
+<input type="file" name="birth_certificate" id="birthCertificate">
+<img id="birthCertificatePreview" style="width:120px;display:none;margin-top:8px;border-radius:6px;">
+</div>
+
+<div class="form-row">
+<label>Aadhar Card</label>
+<input type="file" name="aadhar_card" id="aadharCard">
+<img id="aadharCardPreview" style="width:120px;display:none;margin-top:8px;border-radius:6px;">
+</div>
+
+
+<h2>Declaration</h2>
+
+<label class="checkbox">
+<input type="checkbox" name="declaration" required>
+I confirm that all information provided is correct.
+</label>
+
+<p id="successMsg" style="display:none;color:green;font-weight:bold;text-align:center;">
+✔ Admission Form Submitted Successfully
+</p>
+<button type="submit">Submit Admission Form</button>
+</form>
+</div>
+</div>
+<script src="{% static 'js/script.js' %}"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<div id="topSuccess" class="top-success">
+  ✔ Your Form Submitted Successfully!
+</div>
+</body>
+</html>
