@@ -1,3 +1,5 @@
+from urllib import request
+
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
@@ -51,7 +53,6 @@ def index(request):
 
 # ------------------- ADMIN LOGIN -------------------
 def admin_login(request):
-    error = None
 
     if request.method == "POST":
         username = request.POST.get("admin_username")
@@ -59,19 +60,20 @@ def admin_login(request):
 
         user = authenticate(request, username=username, password=password)
 
-        if user:
+        if user is not None:
             login(request, user)
             return redirect('admin_dashboard')
         else:
-            error = "Invalid username or password"
+            messages.error(request, "Invalid Username or Password ❌")
+            return redirect('index') 
 
-    return render(request, 'admin_login.html', {'error': error})
-
-
-def admin_logout(request):
-    logout(request)
     return redirect('index')
 
+# ------------------- ADMIN LOGOUT -------------------
+def admin_logout(request):
+    logout(request)
+    messages.success(request, "Logout successful 👋")
+    return redirect('index')
 
 # ------------------- DASHBOARD -------------------
 @login_required(login_url='admin_login')
@@ -114,14 +116,13 @@ def add_student(request):
             status="Approved"
         )
 
-    Student.objects.create(
-    student_id="STD" + str(admission.id),
-    name=admission.name,
-    student_class=admission.course,
-    mobile=admission.mobile,
-    status="Approved"
-)
-
+        Student.objects.create(
+            student_id="STD" + str(admission.id),
+            name=admission.name,
+            student_class=admission.course,
+            mobile=admission.mobile,
+            status="Approved"
+        )
 
     return redirect('admin_dashboard')
 
@@ -387,15 +388,8 @@ def update_hero(request):
             hero.slide3 = request.FILES['slide3']
 
         hero.save()
-
-        return redirect('web_content')
         messages.success(request, "Hero section updated successfully!")
-    return redirect('web_content')
-
-
-    return render(request, 'web_content.html', {
-        'hero': hero,
-    })
+        return redirect('web_content')
 
 def update_about(request):
     about = About.objects.first()
@@ -410,10 +404,8 @@ def update_about(request):
             about.image = request.FILES['image']
 
         about.save()
-        return redirect('web_content')
         messages.success(request, "About section updated successfully!")
-        
-    return redirect('web_content')
+        return redirect('web_content')
 
 def update_principal_manager(request):
     pm = PrincipalManager.objects.first()
@@ -451,12 +443,9 @@ def update_principal_manager(request):
             pm.manager_image = request.FILES['manager_image']
 
         pm.save()
-        return redirect('web_content')
         messages.success(request, "Principal updated successfully!")
-        
         messages.success(request, "Manager updated successfully!")
-        
-    return redirect('web_content')
+        return redirect('web_content')
 
 
 
@@ -581,9 +570,3 @@ def delete_gallery(request, id):
     img.delete()
     return redirect('web_content')
 
-from school_app.models import HeroSection
-
-HeroSection.objects.create(
-    title="Test Title",
-    subtitle="Test Subtitle"
-)

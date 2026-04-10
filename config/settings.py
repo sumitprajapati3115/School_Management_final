@@ -80,7 +80,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'mssql',
         'NAME': 'school_db',
-        'USER': '',
+        'USER': '',  
         'PASSWORD': '',
         'HOST': 'LAPTOP-VRUGPCCN\\SQLEXPRESS',
         'PORT': '',
